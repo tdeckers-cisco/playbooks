@@ -5,7 +5,7 @@
 - name: install elrepo
   yum: state=present name=http://www.elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm
 - name: install new kernel
-  yum: name=kernel-ml state=present
+  yum: name=kernel-ml enablerepo=elrepo-kernel state=present
 - name: update grub to boot new kernel
   lineinfile: dest=/boot/grub/grub.conf regexp=^default line=default=0
 - name: reboot host
