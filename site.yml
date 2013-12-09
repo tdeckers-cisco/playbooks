@@ -1,0 +1,7 @@
+---
+# main playbook to deploy site
+
+- hosts: docker
+  roles:
+    - common
+    - docker

@@ -1,0 +1,20 @@
+---
+# Install Docker
+- name: Install RPM key for elrepo
+  rpm_key: state=present key=https://www.elrepo.org/RPM-GPG-KEY-elrepo.org
+- name: install elrepo
+  yum: state=present name=http://www.elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm
+- name: install new kernel
+  yum: name=kernel-ml state=present
+- name: update grub to boot new kernel
+  lineinfile: dest=/boot/grub/grub.conf regexp=^default line=default=0
+- name: reboot host
+  command: /sbin/reboot now
+- name: wait for the host to go down
+  local_action: wait_for host={{ inventory_hostname }} port=22 state=stopped
+- name: wait for host to come back up (wait 30 secs before polling)
+  local_action: wait_for host={{ inventory_hostname }} port=22 delay=30
+- name: Install docker
+  yum: name=docker-io state=present
+- name: ensure docker is running
+  service: name=docker state=started enabled=yes
