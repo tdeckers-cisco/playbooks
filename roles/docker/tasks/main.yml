@@ -6,14 +6,19 @@
   yum: state=present name=http://www.elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm
 - name: install new kernel
   yum: name=kernel-ml enablerepo=elrepo-kernel state=present
+  register: kernel_update
 - name: update grub to boot new kernel
   lineinfile: dest=/boot/grub/grub.conf regexp=^default line=default=0
+  when: kernel_update|changed
 - name: reboot host
   command: /sbin/reboot now
+  when: kernel_update|changed
 - name: wait for the host to go down
   local_action: wait_for host={{ inventory_hostname }} port=22 state=stopped
+  when: kernel_update|changed
 - name: wait for host to come back up (wait 30 secs before polling)
   local_action: wait_for host={{ inventory_hostname }} port=22 delay=30
+  when: kernel_update|changed
 - name: Install docker
   yum: name=docker-io state=present
 - name: ensure docker is running
