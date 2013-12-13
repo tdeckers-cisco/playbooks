@@ -27,6 +27,7 @@ You can turn off [host key checking](http://www.ansibleworks.com/docs/intro_gett
 [defaults]
 host_key_checking = False
 ```
+_Note: `ansible.cfg` can also be kept in the playbook directory._
 
 Use ansible-playbook to run.
 
